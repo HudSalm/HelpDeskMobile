@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HelpDeskNovo",
-    "slug": "HelpDeskNovo",
+    "name": "HelpDesk",
+    "slug": "HelpDesk",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
