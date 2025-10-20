@@ -35,13 +35,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     color: '#f7f7f7',
   },
-  input: {
-    backgroundColor: '#262424ff',
-    borderColor: '#424040ff',
-    borderWidth: 1,
-    borderRadius: 8,
-    color: '#f7f7f7',
-  },
   customButton: {
     marginTop: 25,
     marginBottom: 25,

@@ -8,7 +8,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { supabase } from '@lib/supabase.js';
+import { supabase } from '@lib/supabase.ts';
 import styles from './style.js';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
@@ -61,7 +61,7 @@ function calculateDashboardStats(callsArray) {
   ];
 }
 
-export default function Account() {
+export default function MyCalls() {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const [calls, setCalls] = useState([]);

@@ -7,7 +7,7 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { supabase } from '@lib/supabase.js';
+import { supabase } from '@lib/supabase.ts';
 import styles from './style';
 import { Feather } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -170,7 +170,6 @@ export default function Profile() {
 
   async function handleOpenInfo(infoDetails) {
     if (infoDetails[1] === 'email') {
-      console.log('teste');
       navigation.navigate('UpdateEmail', {
         data: infoDetails[0],
         nameColumn: infoDetails[1],

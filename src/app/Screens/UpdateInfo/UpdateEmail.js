@@ -4,7 +4,7 @@ import Input from '@/app/componentes/input.js';
 import CustomButton from '@/app/componentes/Button1.js';
 import styles from './style.js';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { supabase } from '@lib/supabase.js';
+import { supabase } from '@lib/supabase.ts';
 
 export default function UpdateEmail() {
   const route = useRoute();

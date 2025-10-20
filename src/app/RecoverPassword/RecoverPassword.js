@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Alert, View, Text } from 'react-native';
-import { supabase } from '@lib/supabase.js';
+import { supabase } from '@lib/supabase.ts';
 import { useNavigation } from '@react-navigation/native';
 import Input from '@/app/componentes/input';
 import styles from './style.js';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Alert, ActivityIndicator } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { supabase } from '@lib/supabase.js';
+import { supabase } from '@lib/supabase.ts';
 import { Picker } from '@react-native-picker/picker';
 import styles from './style';
 import CustomButton from '@/app/componentes/Button1';

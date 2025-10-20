@@ -1,12 +1,14 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, Profiler } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { supabase } from './lib/supabase';
+import { supabase } from '@lib/supabase';
+import { Session } from '@supabase/supabase-js';
 import { NavigationContainer, StackRouter } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { RootStackParamList, RootTabParamList } from '@/navigation/types';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Account from '@/app/Screens/Mycalls/Mycalls';
+import { AntDesign } from '@expo/vector-icons';
+import MyCalls from '@/app/Screens/Mycalls/MyCalls';
 import LoginScreen from '@/app/Screens/LoginScreen/LoginScreen';
 import SignUpScreen from '@/app/Screens/SignUpScreen/SignUpScreen';
 import RecoverPassword from '@/app/RecoverPassword/RecoverPassword';
@@ -25,8 +27,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function MainTabs() {
   return (
@@ -39,27 +41,30 @@ function MainTabs() {
       }}
     >
       <Tab.Screen
-        name="Histórico"
-        component={Account}
+        name="MyCalls"
+        component={MyCalls}
         options={{
+          title: 'Histórico',
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="history" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name="Chamados"
+        name="CallsReceived"
         component={CallsReceived}
         options={{
+          title: 'Chamados',
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="customer-service" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name="Meu Perfil"
+        name="Profile"
         component={Profile}
         options={{
+          title: 'Meu Perfil',
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="customer-service" color={color} size={size} />
           ),
@@ -72,9 +77,9 @@ function MainTabs() {
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen
-        name="SignUp"
+        name="SignUpScreen"
         component={SignUpScreen}
         options={{
           headerShown: true,
@@ -160,7 +165,7 @@ function AppStack() {
 }
 
 export default function App() {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   //Estado "persistente" para o modo de recuperação
   const [recoveryMode, setRecoveryMode] = useState(false);

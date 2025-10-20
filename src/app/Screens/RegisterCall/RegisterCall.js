@@ -4,7 +4,7 @@ import CustomButtom from '@/app/componentes/Button1.js';
 import Input from '@/app/componentes/input.js';
 import SelectList from '@/app/componentes/selectList.js';
 import styles from './style.js';
-import { supabase } from '@lib/supabase.js';
+import { supabase } from '@lib/supabase.ts';
 import { useNavigation } from '@react-navigation/native';
 
 export default function RegisterCall() {

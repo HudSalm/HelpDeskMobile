@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { supabase } from '@lib/supabase.js';
+import { supabase } from '@lib/supabase.ts';
 import { useNavigation } from '@react-navigation/native';
 import styles from './style.js';
 import Input from '@/app/componentes/input.js';

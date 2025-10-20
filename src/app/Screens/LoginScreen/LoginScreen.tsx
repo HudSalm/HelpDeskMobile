@@ -7,18 +7,19 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { supabase } from '@lib/supabase.js';
-import { useNavigation } from '@react-navigation/native';
-import styles from './style.js';
+import { supabase } from '@lib/supabase';
+import { StackScreenProps } from '@react-navigation/stack';
+import styles from './style';
 import Input from '@/app/componentes/input.js';
 import CustomButton from '@/app/componentes/Button1.js';
+import { RootStackParamList } from '@/navigation/types';
 
-export default function LoginScreen() {
+type Props = StackScreenProps<RootStackParamList, 'LoginScreen'>;
+
+export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const navigation = useNavigation();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -81,7 +82,7 @@ export default function LoginScreen() {
       <TouchableOpacity onPress={() => navigation.navigate('RecoverPassword')}>
         <Text style={styles.switchText}>Esqueceu a senha ?</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+      <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
         <Text style={styles.switchText}>Não tem uma conta ? Cadastre-se</Text>
       </TouchableOpacity>
     </View>
