@@ -1,4 +1,3 @@
-import CustomButton from '@/app/componentes/Button1';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({

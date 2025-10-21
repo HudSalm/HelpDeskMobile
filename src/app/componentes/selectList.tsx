@@ -1,5 +1,15 @@
 import { View, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import {
+  Picker,
+  PickerItemProps,
+  PickerProps,
+} from '@react-native-picker/picker';
+
+type MyItemType = { label: string; value: string };
+
+type Props = PickerProps & {
+  items: MyItemType[];
+};
 
 const SelectList = ({
   items,
@@ -7,7 +17,7 @@ const SelectList = ({
   onValueChange,
   style,
   dropdownIconColor,
-}) => {
+}: Props) => {
   return (
     <View style={styles.select}>
       <Picker

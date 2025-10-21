@@ -6,14 +6,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { supabase } from '@lib/supabase.ts';
-import { useNavigation } from '@react-navigation/native';
-import styles from './style.js';
-import Input from '@/app/componentes/input.js';
-import SelectList from '@/app/componentes/selectList.js';
-import CustomButton from '@/app/componentes/Button1.js';
+import { supabase } from '@lib/supabase';
+import { StackScreenProps } from '@react-navigation/stack';
+import styles from './style';
+import Input from '@/app/componentes/input';
+import SelectList from '@/app/componentes/selectList';
+import CustomButton from '@/app/componentes/Button1';
+import { RootStackParamList } from '@/navigation/types';
 
-function translateSupabaseError(errorMessage) {
+function translateSupabaseError(errorMessage: string) {
   if (errorMessage === 'User already registered') {
     return 'Este email já possui uma conta. Por favor, faça login.';
   }
@@ -30,14 +31,16 @@ function translateSupabaseError(errorMessage) {
   return 'Ocorreu um erro inesperado. Tente novamente.';
 }
 
-export default function SignUpScreen() {
+type Props = StackScreenProps<RootStackParamList, 'SignUpScreen'>;
+
+export default function SignUpScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedDepartament, setSelectedDepartament] = useState();
+  const [selectedDepartament, setSelectedDepartament] = useState<any>(); // sim, eu usei any porque não consegui resolver o problema da incompatibilidade entre o tipo do department em insert e o itemValue na selectlist
 
   const departamentItems = [
     { label: 'TI', value: 'TI' },
@@ -45,8 +48,6 @@ export default function SignUpScreen() {
     { label: 'RH', value: 'RH' },
     { label: 'Escritório', value: 'Escritório' },
   ];
-
-  const navigation = useNavigation();
 
   async function signUpWithEmail() {
     if (!email || !password) {
@@ -127,7 +128,7 @@ export default function SignUpScreen() {
       }
 
       Alert.alert('Sucesso!', 'Sua conta foi criada com sucesso.');
-      navigation.navigate('Account');
+      navigation.navigate('MainTabs', { screen: 'MyCalls' });
     } catch (e) {
       Alert.alert('Erro Inesperado', 'Ocorreu um erro durante o cadastro.');
       console.error(e);
@@ -169,10 +170,10 @@ export default function SignUpScreen() {
         value={phoneNumber}
         onChangeText={setPhoneNumber}
         isNumber={true}
-        maskType={'cel-phone'}
-        maskOptions={{
+        type={'cel-phone'}
+        options={{
           maskType: 'BRL',
-          withDDD: 'true',
+          withDDD: true,
           dddMask: '(99) ',
         }}
       />

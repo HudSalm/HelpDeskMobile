@@ -1,52 +1,49 @@
-import { StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { CallTypeUtils } from '@/types/types-utils';
+import { Feather } from '@expo/vector-icons';
+
+type Props = {
+  item: CallTypeUtils;
+  handleModify: (id: number) => void;
+  isDelete: boolean;
+};
+
+const TableCalls = ({ item, handleModify, isDelete }: Props) => (
+  <View style={styles.tableRow}>
+    <Text style={[styles.rowText, styles.columnReason]}>{item.reason}</Text>
+    <Text style={getStatusStyle(item.status)}>{item.status}</Text>
+    <Text style={[styles.rowText, styles.columnDept]}>
+      {item.required_department}
+    </Text>
+    {isDelete ? (
+      <View style={styles.columnActions}>
+        <TouchableOpacity onPress={() => handleModify(item.id)}>
+          <Feather name="trash-2" size={20} color="#E74C3C" />
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <View style={styles.columnActions}>
+        <TouchableOpacity onPress={() => handleModify(item.id)}>
+          <Feather name="edit-2" size={20} color="#E74C3C" />
+        </TouchableOpacity>
+      </View>
+    )}
+  </View>
+);
+
+const getStatusStyle = (status: string | null) => {
+  if (status === 'Aberto') {
+    return [styles.statusTextYellow, styles.columnStatusYellow];
+  } else if (status === 'Em andamento') {
+    return [styles.statusTextBlue, styles.columnStatusBlue];
+  }
+  return [styles.statusTextGreen, styles.columnStatusGreen];
+};
+
+export default TableCalls;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#090808ff',
-  },
-
-  header: {
-    flexDirection: 'row',
-    backgroundColor: '#090808ff',
-    justifyContent: 'space-between',
-    marginTop: 45,
-    padding: 25,
-  },
-
-  textDashboard: {
-    color: '#f7f7f7',
-    paddingLeft: 30,
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-
-  textTittleCalls: {
-    color: '#f7f7f7',
-    paddingLeft: 30,
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-
-  calls: {
-    flex: 1,
-    marginHorizontal: 15,
-    marginTop: 10,
-  },
-
-  tableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#3a3a3a',
-    paddingVertical: 12,
-    paddingHorizontal: 5,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  headerText: {
-    color: '#f7f7f7',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   tableRow: {
     flexDirection: 'row',
     backgroundColor: '#2a2a2a',
@@ -76,11 +73,6 @@ const styles = StyleSheet.create({
   columnActions: {
     flex: 1,
     alignItems: 'center',
-  },
-
-  buttomPosition: {
-    alignSelf: 'flex-end',
-    padding: 25,
   },
 
   statusTextGreen: {
@@ -129,5 +121,3 @@ const styles = StyleSheet.create({
     padding: 5,
   },
 });
-
-export default styles;

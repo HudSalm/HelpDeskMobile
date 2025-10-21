@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Alert, View, Text, ActivityIndicator } from 'react-native';
 import { supabase } from '@lib/supabase.ts';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import Input from '@/app/componentes/input.js';
+import Input from '@/app/componentes/input';
 import styles from './style.js';
-import CustomButton from '@/app/componentes/Button1.js';
+import CustomButton from '@/app/componentes/Button1';
 
 export default function UpdatePassword() {
   const route = useRoute();

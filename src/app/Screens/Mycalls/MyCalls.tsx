@@ -1,29 +1,34 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   FlatList,
   Dimensions,
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { supabase } from '@lib/supabase.ts';
-import styles from './style.js';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
+import { supabase } from '@lib/supabase';
+import styles from './style';
+import { StackScreenProps } from '@react-navigation/stack';
+import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import ButtomCircule from '@/app/componentes/buttomCircule.js';
 import DashboardCard from '@/app/componentes/dashboardCard.js';
+import { RootStackParamList, RootTabParamList } from '@/navigation/types.js';
+import TableCalls from '@/app/componentes/TableCalls';
+import { Dashboards } from '@/types/types-utils';
+import { CallTypeUtils } from '@/types/types-utils';
 
 const TableHeader = () => (
   <View style={styles.tableHeader}>
     <Text style={[styles.headerText, styles.columnReason]}>Motivo</Text>
     <Text style={[styles.headerText, styles.columnStatus]}>Status</Text>
+    <Text style={[styles.headerText, styles.columnDept]}>Dp.Chamado</Text>
     <Text style={[styles.headerText, styles.columnActions]}>Ações</Text>
   </View>
 );
 
-function calculateDashboardStats(callsArray) {
+function calculateDashboardStats(callsArray: CallTypeUtils[]) {
   if (!callsArray) return [];
 
   const totalChamados = callsArray.length;
@@ -59,59 +64,38 @@ function calculateDashboardStats(callsArray) {
   ];
 }
 
-export default function CallsReceived() {
+type Props = StackScreenProps<RootStackParamList, 'MainTabs'>;
+
+export default function MyCalls({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
-  const [calls, setCalls] = useState([]);
-  const [dashboardData, setDashboardData] = useState([]);
+  const [calls, setCalls] = useState<CallTypeUtils[]>([]);
+  const [dashboardData, setDashboardData] = useState<Dashboards[]>([]);
 
   const { width } = Dimensions.get('window');
   const CARD_CONTAINER_WIDTH = width / 2;
 
   useFocusEffect(
-    useCallback(() => {
+    React.useCallback(() => {
       async function fetchData() {
         setLoading(true);
-
         try {
           const {
             data: { user },
           } = await supabase.auth.getUser();
 
           if (user) {
-            const { data: profileData, error: profileError } = await supabase
-              .from('profiles')
-              .select('department')
-              .eq('id', user.id)
-              .single();
+            const { data: callDatas, error } = await supabase
+              .from('calls')
+              .select('id, reason, status, required_department')
+              .eq('id_applicant', user.id)
+              .order('created_at', { ascending: false });
 
-            if (profileError) {
-              Alert.alert(
-                'Erro',
-                'Não foi possível carregar os dados do seu perfil.',
-              );
-              console.error(
-                'Erro ao buscar o perfil do usuário:',
-                profileError,
-              );
-              setLoading(false);
-              return;
-            }
-
-            if (profileData) {
-              const { data: callDatas, error: callsError } = await supabase
-                .from('calls')
-                .select('*, profiles ( name, department )')
-                .eq('required_department', profileData.department)
-                .order('created_at', { ascending: false });
-
-              if (callsError) {
-                console.error('Erro ao buscar chamados:', callsError);
-              } else {
-                setCalls(callDatas || []);
-                const newDashboardData = calculateDashboardStats(callDatas);
-                setDashboardData(newDashboardData);
-              }
+            if (error) {
+              console.error('Erro ao buscar chamados:', error);
+            } else if (callDatas) {
+              setCalls(callDatas);
+              const newDashboardData = calculateDashboardStats(callDatas);
+              setDashboardData(newDashboardData);
             }
           }
         } catch (error) {
@@ -126,21 +110,52 @@ export default function CallsReceived() {
       }
 
       fetchData();
+      return () => {};
     }, []),
   );
 
-  async function handleOpenDetails(callItem) {
-    navigation.navigate('UpdateCalls', { callDetails: callItem });
+  async function handleDelete(chamadoId: number) {
+    Alert.alert(
+      'Confirmar Cancelamento',
+      'Você tem certeza que deseja cancelar este chamado? Esta ação não pode ser desfeita.',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: async () => {
+            const { error } = await supabase
+              .from('calls')
+              .delete()
+              .eq('id', chamadoId);
+
+            if (error) {
+              Alert.alert(
+                'Erro',
+                'Não foi possível cancelar o chamado. Tente novamente.',
+              );
+              console.error('Erro ao deletar:', error);
+            } else {
+              const newCalls = calls.filter((call) => call.id !== chamadoId);
+              setCalls(newCalls);
+
+              const newDashboardData = calculateDashboardStats(newCalls);
+              setDashboardData(newDashboardData);
+
+              Alert.alert('Sucesso', 'O chamado foi cancelado.');
+            }
+          },
+          style: 'destructive',
+        },
+      ],
+    );
   }
 
-  const getStatusStyle = (status) => {
-    if (status === 'Aberto') {
-      return [styles.statusTextYellow, styles.columnStatusYellow];
-    } else if (status === 'Em andamento') {
-      return [styles.statusTextBlue, styles.columnStatusBlue];
-    }
-    return [styles.statusTextGreen, styles.columnStatusGreen];
-  };
+  function handleRegisterCall() {
+    navigation.navigate('RegisterCall');
+  }
 
   if (loading) {
     return (
@@ -149,20 +164,6 @@ export default function CallsReceived() {
       </View>
     );
   }
-
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.tableRow}>
-        <Text style={[styles.rowText, styles.columnReason]}>{item.reason}</Text>
-        <Text style={getStatusStyle(item.status)}>{item.status}</Text>
-        <View style={[styles.rowText, styles.columnActions]}>
-          <TouchableOpacity onPress={() => handleOpenDetails(item)}>
-            <Feather name="edit-2" size={20} color="#E74C3C" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -186,12 +187,21 @@ export default function CallsReceived() {
       <Text style={styles.textTittleCalls}>Últimos chamados:</Text>
       <View style={styles.calls}>
         <FlatList
-          styles={styles.callsList}
           data={calls}
-          renderItem={renderItem}
+          renderItem={({ item }) => (
+            <TableCalls
+              item={item}
+              handleModify={handleDelete}
+              isDelete={true}
+            />
+          )}
           keyExtractor={(item) => item.id.toString()}
           ListHeaderComponent={<TableHeader />}
         />
+      </View>
+
+      <View style={styles.buttomPosition}>
+        <ButtomCircule onPress={handleRegisterCall} />
       </View>
     </View>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Alert, ActivityIndicator } from 'react-native';
-import Input from '@/app/componentes/input.js';
-import CustomButton from '@/app/componentes/Button1.js';
+import Input from '@/app/componentes/input';
+import CustomButton from '@/app/componentes/Button1';
 import styles from './style.js';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { supabase } from '@lib/supabase.ts';

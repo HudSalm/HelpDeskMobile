@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Text, View, TextInput, Alert, ActivityIndicator } from 'react-native';
-import CustomButtom from '@/app/componentes/Button1.js';
-import Input from '@/app/componentes/input.js';
-import SelectList from '@/app/componentes/selectList.js';
+import CustomButtom from '@/app/componentes/Button1';
+import Input from '@/app/componentes/input';
+import SelectList from '@/app/componentes/selectList';
 import styles from './style.js';
 import { supabase } from '@lib/supabase.ts';
 import { useNavigation } from '@react-navigation/native';

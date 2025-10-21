@@ -10,8 +10,8 @@ import {
 import { supabase } from '@lib/supabase';
 import { StackScreenProps } from '@react-navigation/stack';
 import styles from './style';
-import Input from '@/app/componentes/input.js';
-import CustomButton from '@/app/componentes/Button1.js';
+import Input from '@/app/componentes/input';
+import CustomButton from '@/app/componentes/Button1';
 import { RootStackParamList } from '@/navigation/types';
 
 type Props = StackScreenProps<RootStackParamList, 'LoginScreen'>;
@@ -77,6 +77,7 @@ export default function LoginScreen({ navigation }: Props) {
         title={'Entrar'}
         loading={loading}
         onPress={signInWithEmail}
+        color="#28A745"
       />
 
       <TouchableOpacity onPress={() => navigation.navigate('RecoverPassword')}>
